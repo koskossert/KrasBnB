@@ -1,0 +1,20 @@
+<%= link_to "Назад", :back%>
+
+<%= form_with model: @listing, url: listing_path(@listing), local: true do |form| %>
+    <%= form.label "Название" %>
+    <%= form.text_field :title %>
+
+    <%= form.label "Цена" %>
+    <%= form.number_field :price%>
+
+    <%= form.label "Район" %>
+    <%= form.text_field :city %>
+
+    <%= form.label "Описание" %>
+    <%= form.text_area :description %>
+
+    <%= form.label "Количество спальных мест" %>
+    <%= form.number_field :people%>
+
+    <%= form.submit "Изменить"%>
+<% end %>

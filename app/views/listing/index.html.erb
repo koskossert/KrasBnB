@@ -1,0 +1,48 @@
+<!-- Кнопка перехода в профиль-->
+<ul>
+  <% if user_signed_in? %>
+  <%= button_to "Выйти", destroy_user_session_path, method: :delete %>    <li><%= link_to "Редактировать профиль", edit_user_registration_path %></li>
+  <% else %>
+    <li><%= link_to "Войти", new_user_session_path %></li>
+  <% end %>
+</ul>
+
+<!-- Сначала форма с сортирвкой от и до и количество человек-->
+<%= form_with url: { controller: 'listing', action: 'index' }, method: :get, local: true do |form| %>
+    <%= form.label :first_day, "Выберите с какого числа: "%>
+    <%= form.date_field :first_day%>
+
+    <%= form.label :last_day, "Выберите до какого числа: "%>
+    <%= form.date_field :last_day%>
+
+    <%= form.label :numPeop, "Введите количество человек"%>
+    <%= form.number_field :numPeop, min: 1, max: 6 %>
+
+    <%= form.submit "Подобрать"%>
+  <%end%>
+
+<!-- Выводим все объявления-->
+<div class="cards-container">
+<% @listings.each do |list| %>
+<%= link_to listing_path(list) do %>
+<div class="card">
+    <img src="/<%=  list.image.first.path%>">
+    <div class="card-content">
+        <% peop = "" 
+        if list.title == 1 || list.title == 5 || list.title == 6
+          peop = " человек"
+         else
+          peop = " человека"
+          end%>
+        <h3 class="card-title"> <%= list.title %> </h3>
+        <p class="card-description"> <%= list.description %> </p>
+        <p class="card-price"> <%= list.price %> </p>
+        <div class="card-info">
+            <span class="people"><%= list.people%> <%= peop %></span>
+            <span class="city"><%= list.city %></span>
+        </div>
+    </div>
+    <% end %>
+</div>
+<%end%>
+</div>

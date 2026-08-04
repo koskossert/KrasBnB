@@ -1,0 +1,94 @@
+<%= link_to "Назад", root_path, class: "back-link" %>
+
+<div class="photos">
+  <div class="photo-placeholder">
+    <% @listing.image.each do |photo| %>
+      <img src="/<%= photo.path %>">
+    <% end %>
+  </div>
+</div>
+<div class="info">
+  <h1> <%= @listing.title %></h1>
+  
+  <div class="description"> <%= @listing.description %> </div>
+  
+  <p> <%= @listing.city %> </p>
+  
+  <ul class="attributes">
+    <li><strong>Район</strong> <%= @listing.city %> </li>
+    <li><strong>Максимальное количество людей</strong> <%= @listing.people %> </li>
+  </ul>
+
+  <p>Рейтинг</p>
+  <p> <%= @listing.rating %> </p>
+
+  <!-- Таблица дополнительных возможностей -->
+  <table class="features-table">
+    <% @listing.parameters.each do |parameter| %>
+    <tr>
+      <td><span class="feature-label"><%= parameter.name %></span></td>
+    </tr>
+    <% end %>
+  </table>
+  
+  <div class="price"> <%= @listing.price %> руюлей</div>
+
+  <h1>Все комментарии</h1>
+    <!-- Комментарии -->
+    <% @listing.comment.each do |comment| %>
+        <p><%= comment.body %></p>
+        <p><%= comment.user.email %></p>
+        <p><%= comment.created_at %></p>
+    <%end%>
+
+  <!-- Форма создания комментария -->
+  <% if current_user %>
+    <%= form_with url: comment_index_path do |form|%>
+      <%= form.text_field :body%>
+      <%= form.hidden_field :listing_id, value: @listing.id %>
+      <%= form.hidden_field :user_id, value: current_user.id %>
+      <%= form.submit "Отправить"%>
+    <% end %>
+  <% end %>
+
+  <!-- Редактирование объявления -->
+<% if current_user %>
+  <% if current_user.id == @listing.user_id %>
+    <%= link_to "Редактировать статью", edit_listing_path%>
+  <% end %>
+<% end %>
+
+<!-- Забронировать номер-->
+<p>Выберите даты бля бронирования номера</p>
+<% if current_user %>
+  <%= form_with url: booking_index_path, local: true do |form|%>
+    <%= form.label "Выберите первую дату: "%>
+    <%= form.date_field :first%>
+
+    <%= form.label "Выберите вторую дату:" %>
+    <%= form.date_field :second %>
+
+    <%= form.hidden_field :listing_id, value: @listing.id %>
+    <%= form.hidden_field :user_id, value: current_user.id %>
+
+    <%= form.submit "Забронировать"%>
+  <% end %>
+<% end %>
+
+<% mass = [] #помещаем даты%>
+<% @busyDates.each do |f|%>
+  <% for i in f.first.day...f.second.day %>
+    <% mass << i %>
+  <% end %>
+<% end %>
+
+<%= month_calendar do |date| %>
+  <% d1 = Date.new(2026, 7, 31) %>
+  <% if mass.include?(date.day) %>
+    <p style="background-color:red;"><%= date.day %></p>
+  <% else %>
+    <%= date.day %>
+  <% end %>
+<% end %>
+
+</div>

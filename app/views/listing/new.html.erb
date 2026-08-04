@@ -1,0 +1,36 @@
+
+<% dop = []%>
+<% @character.each do |char| %>
+    <% dop.push(char.name) %>
+<% end %>
+
+<h1>Создать новое объявление</h1>
+<%= form_with model: @listing, url: listing_index_path, local: true do |form| %>
+    <%= form.label "Введите заголовок"%>
+    <%= form.text_field :title %>
+
+    <%= form.label "Введите цену"%>
+    <%= form.number_field :price %>
+
+    <%= form.label "Район"%>
+    <%= form.text_field :city %>
+
+    <%= form.label "Описание"%>
+    <%= form.text_area :description %>
+
+    <%= form.label "Количество спальных мест"%>
+    <%= form.number_field :people %>
+
+    
+    <%= form.label "Выберите дополнительные характеристики: "%>
+    <div class="checkbox-group">
+        <%= form.collection_check_boxes :parameter_ids, @character, :id, :name do |b| %>
+            <div class="checkbox-item">
+                <%= b.check_box %>
+                <%= b.label %>
+            </div>
+        <% end %>
+    
+    </div>
+    <%= form.submit "Создать"%>
+<% end %>
